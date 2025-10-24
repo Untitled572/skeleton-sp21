@@ -2,18 +2,16 @@ package game2048;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /** Tests the tilt() method in the up (Side.NORTH) direction only.
  *
  * @author Omar Khan
  */
-public class TestUpOnly extends TestUtils {
+public class TestDownOnly extends TestUtils {
 
 
     @Test
     /** Move tiles up (no merging). */
-    public void testUpNoMerge() {
+    public void testDownNoMerge() {
         int[][] before = new int[][] {
                 {0, 0, 4, 0},
                 {0, 0, 0, 2},
@@ -21,17 +19,17 @@ public class TestUpOnly extends TestUtils {
                 {0, 0, 0, 0},
         };
         int[][] after = new int[][] {
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
                 {0, 0, 4, 2},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
         };
 
         model = new Model(before, 0, 0, false);
         String prevBoard = model.toString();
-        boolean changed = model.tilt(Side.NORTH);
-        checkChanged(Side.NORTH, true, changed);
-        checkModel(after, 0, 0, prevBoard, Side.NORTH);
+        boolean changed = model.tilt(Side.SOUTH);
+        checkChanged(Side.SOUTH, true, changed);
+        checkModel(after, 0, 0, prevBoard, Side.SOUTH);
     }
 
     @Test
@@ -44,17 +42,17 @@ public class TestUpOnly extends TestUtils {
                 {0, 0, 0, 0},
         };
         int[][] after = new int[][] {
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
                 {0, 0, 4, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
         };
 
         updateModel(before, 0, 0, false);
         String prevBoard = model.toString();
-        boolean changed = model.tilt(Side.NORTH);
-        checkChanged(Side.NORTH, true, changed);
-        checkModel(after, 4, 0, prevBoard, Side.NORTH);
+        boolean changed = model.tilt(Side.SOUTH);
+        checkChanged(Side.SOUTH, true, changed);
+        checkModel(after, 4, 0, prevBoard, Side.SOUTH);
     }
 
     @Test
@@ -67,17 +65,17 @@ public class TestUpOnly extends TestUtils {
                 {0, 0, 2, 0},
         };
         int[][] after = new int[][] {
-                {0, 0, 4, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
                 {0, 0, 2, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
+                {0, 0, 4, 0},
         };
 
         updateModel(before, 0, 0, false);
         String prevBoard = model.toString();
-        boolean changed = model.tilt(Side.NORTH);
-        checkChanged(Side.NORTH, true, changed);
-        checkModel(after, 4, 0, prevBoard, Side.NORTH);
+        boolean changed = model.tilt(Side.SOUTH);
+        checkChanged(Side.SOUTH, true, changed);
+        checkModel(after, 4, 0, prevBoard, Side.SOUTH);
     }
 
     @Test
@@ -87,24 +85,47 @@ public class TestUpOnly extends TestUtils {
      * merge with the newly created 4 tile on the top row. If you're failing
      * this test, try seeing how you can ensure that the bottom 4 tile doesn't
      * merge with the newly created 4 tile on top.*/
-    public void testUpTrickyMerge() {
+    public void testDownTrickyMerge() {
         int[][] before = new int[][] {
-                {2, 0, 2, 16},
-                {4, 2, 0, 8},
-                {2, 0, 4, 8},
-                {2, 2, 2, 16},
+                {0, 0, 2, 0},
+                {0, 0, 4, 0},
+                {0, 0, 2, 0},
+                {0, 0, 0, 0},
         };
         int[][] after = new int[][] {
-                {2, 4, 2, 16},
-                {4, 0, 4, 16},
-                {4, 0, 2, 16},
                 {0, 0, 0, 0},
+                {0, 0, 2, 0},
+                {0, 0, 4, 0},
+                {0, 0, 2, 0},
         };
 
         updateModel(before, 0, 0, false);
         String prevBoard = model.toString();
-        boolean changed = model.tilt(Side.NORTH);
-        checkChanged(Side.NORTH, true, changed);
-        checkModel(after, 24, 0, prevBoard, Side.NORTH);
+        boolean changed = model.tilt(Side.SOUTH);
+        checkChanged(Side.SOUTH, true, changed);
+        checkModel(after, 0, 0, prevBoard, Side.SOUTH);
+    }
+
+
+    @Test
+    public void testRightTrickyMerge() {
+        int[][] before = new int[][] {
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {4, 0, 2, 2},
+        };
+        int[][] after = new int[][] {
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 4, 4},
+        };
+
+        updateModel(before, 0, 0, false);
+        String prevBoard = model.toString();
+        boolean changed = model.tilt(Side.EAST);
+        checkChanged(Side.EAST, true, changed);
+        checkModel(after, 4, 0, prevBoard, Side.EAST);
     }
 }

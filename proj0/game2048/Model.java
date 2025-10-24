@@ -1,5 +1,6 @@
 package game2048;
 
+import java.lang.annotation.Target;
 import java.util.Formatter;
 import java.util.Observable;
 
@@ -106,6 +107,279 @@ public class Model extends Observable {
      *    value, then the leading two tiles in the direction of motion merge,
      *    and the trailing tile does not.
      * */
+    private int moveUp(int c, int r){ //return move how many step
+        if(r == board.size() - 1){ //at top, return 0 step
+            return 0;
+        }
+        if(board.tile(c, r + 1) == null){ //try move will find if any space to move up
+            return moveUp(c, r + 1) + 1;
+        }
+        return 0;
+    }
+
+    private int mergeUp(int c, int r, Tile t){
+        if(r == board.size() - 1){ //at top, return 0 step
+            return 0;
+        }
+        if(board.tile(c, r + 1) != null && board.tile(c, r + 1).value() == t.value()) { //up is to-be-merged, merge
+            return mergeUp(c, r + 1, t) + 1;
+        } else if (board.tile(c, r + 1) == null) { //up is empty, just move up
+            return mergeUp(c, r + 1, t) + 1;
+        }
+        return 0;
+    }
+
+    private boolean upToMoveTilt(){
+        boolean changed;
+        changed = false;
+        int size = board.size();
+        for(int c = 0; c < size; c += 1){
+
+            for(int r = 0; r < size - 1; r += 1){
+                Tile t = board.tile(c, r);
+                if(t != null){
+                    int step = moveUp(c, r) + r;
+                    board.move(c, step, t);
+                    changed = true;
+                }
+            }
+
+            int haveTrueChanged = -1;
+            for(int r = 0; r < size - 1; r += 1){
+                Tile t = board.tile(c, r);
+                if(t != null && t.value() != haveTrueChanged){
+                    int step = mergeUp(c, r, t) + r;
+                    int currentvalue = 0;
+                    if (step != t.row()){
+                        haveTrueChanged = t.value() * 2;
+                        currentvalue = t.value();
+                    }
+                    board.move(c, step, t);
+                    if(board.tile(c, step).value() != currentvalue && currentvalue != 0){
+                        //value changed after move, then update score
+                        score += board.tile(c, step).value();
+                    }
+                    changed = true;
+                }
+            }
+
+            for(int r = 0; r < size - 1; r += 1){
+                Tile t = board.tile(c, r);
+                if(t != null){
+                    int step = moveUp(c, r) + r;
+                    board.move(c, step, t);
+                    changed = true;
+                }
+            }
+        }
+        return changed;
+    }
+
+    private int moveDown(int c, int r){ //return move how many step
+        if(r == 0){ //at bottom, return 0 step
+            return 0;
+        }
+        if(board.tile(c, r - 1) == null){ //try move will find if any space to move up
+            return moveDown(c, r - 1) + 1;
+        }
+        return 0;
+    }
+
+    private int mergeDown(int c, int r, Tile t){
+        if(r <= 0){ //at bottom, return 0 step
+            return 0;
+        }
+        Tile tdown = board.tile(c, r - 1);
+        if(tdown != null && tdown.value() == t.value()) { //up is to-be-merged, merge
+            return mergeDown(c, r - 1, t) + 1;
+        } else if (tdown == null) { //down is empty, just move down
+            return mergeDown(c, r - 1, t) + 1;
+        }
+        return 0;
+    }
+
+    private boolean downToMoveTilt(){
+        boolean changed;
+        changed = false;
+        int size = board.size();
+        for(int c = 0; c < size; c += 1){
+            for(int r = size - 1; r > 0; r -= 1){
+                Tile t = board.tile(c, r);
+                if(t != null){
+                    int step = r - moveDown(c, r);
+                    board.move(c, step, t);
+                    changed = true;
+                }
+            }
+
+            int haveTrueChanged = -1;
+            for(int r = size - 1; r > 0; r -= 1){
+                Tile t = board.tile(c, r);
+                if(t != null && t.value() != haveTrueChanged) {
+                    int step = r - mergeDown(c, r, t);
+                    int currentvalue = 0;
+                    if (step != t.row()) {
+                        haveTrueChanged = t.value() * 2;
+                        currentvalue = t.value();
+                    }
+                    board.move(c, step, t);
+                    if (board.tile(c, step).value() != currentvalue && currentvalue != 0) {
+                        //value changed after move, then update score
+                        score += board.tile(c, step).value();
+                    }
+                    changed = true;
+                }
+            }
+
+            for(int r = size - 1; r > 0; r -= 1){
+                Tile t = board.tile(c, r);
+                if(t != null){
+                    int step = r - moveDown(c, r);
+                    board.move(c, step, t);
+                    changed = true;
+                }
+            }
+        }
+        return changed;
+    }
+
+    private int moveRight(int c, int r){ //return move how many step
+        if(c == board.size() - 1){ //at top, return 0 step
+            return 0;
+        }
+        if(board.tile(c + 1, r) == null){ //try move will find if any space to move up
+            return moveRight(c + 1, r) + 1;
+        }
+        return 0;
+    }
+
+    private int mergeRight(int c, int r, Tile t){
+        if(c == board.size() - 1){ //at top, return 0 step
+            return 0;
+        }
+        Tile tright = board.tile(c + 1, r);
+        if(tright != null && tright.value() == t.value()) { //up is to-be-merged, merge
+            return mergeRight(c + 1, r, t) + 1;
+        } else if (tright == null) { //up is empty, just move up
+            return mergeRight(c + 1, r, t) + 1;
+        }
+        return 0;
+    }
+
+    private boolean rightToMoveTilt(){
+        boolean changed;
+        changed = false;
+        int size = board.size();
+        for(int r = 0; r < size; r += 1){
+
+            for(int c = 0; c < size - 1; c += 1){
+                Tile t = board.tile(c, r);
+                if(t != null){
+                    int step = moveRight(c, r) + c;
+                    board.move(step, r, t);
+                    changed = true;
+                }
+            }
+
+            int haveTrueChanged = -1;
+            for(int c = 0; c < size - 1; c += 1){
+                Tile t = board.tile(c, r);
+                if(t != null && t.value() != haveTrueChanged){
+                    int step = mergeRight(c, r, t) + c;
+                    int currentvalue = 0;
+                    if (step != t.col()){
+                        haveTrueChanged = t.value() * 2;
+                        currentvalue = t.value();
+                    }
+                    board.move(step, r, t);
+                    if(board.tile(step, r).value() != currentvalue && currentvalue != 0){
+                        //value changed after move, then update score
+                        score += board.tile(step, r).value();
+                    }
+                    changed = true;
+                }
+            }
+
+            for(int c = 0; c < size - 1; c += 1){
+                Tile t = board.tile(c, r);
+                if(t != null){
+                    int step = moveRight(c, r) + c;
+                    board.move(step, r, t);
+                    changed = true;
+                }
+            }
+        }
+        return changed;
+    }
+
+    private int moveLeft(int c, int r){ //return move how many step
+        if(c == 0){ //at bottom, return 0 step
+            return 0;
+        }
+        if(board.tile(c - 1, r) == null){ //try move will find if any space to move up
+            return moveLeft(c - 1, r) + 1;
+        }
+        return 0;
+    }
+
+    private int mergeLeft(int c, int r, Tile t){
+        if(c <= 0){ //at bottom, return 0 step
+            return 0;
+        }
+        Tile tleft = board.tile(c - 1, r);
+        if(tleft != null && tleft.value() == t.value()) { //up is to-be-merged, merge
+            return mergeLeft(c - 1, r, t) + 1;
+        } else if (tleft == null) { //down is empty, just move down
+            return mergeLeft(c - 1, r, t) + 1;
+        }
+        return 0;
+    }
+
+    private boolean leftToMoveTilt(){
+        boolean changed;
+        changed = false;
+        int size = board.size();
+        for(int r = 0; r < size; r += 1){
+            for(int c = size - 1; c > 0; c -= 1){
+                Tile t = board.tile(c, r);
+                if(t != null){
+                    int step = c - moveLeft(c, r);
+                    board.move(step, r, t);
+                    changed = true;
+                }
+            }
+
+            int haveTrueChanged = -1;
+            for(int c = size - 1; c > 0; c -= 1){
+                Tile t = board.tile(c, r);
+                if(t != null && t.value() != haveTrueChanged) {
+                    int step = c - mergeLeft(c, r, t);
+                    int currentvalue = 0;
+                    if (step != t.col()) {
+                        haveTrueChanged = t.value() * 2;
+                        currentvalue = t.value();
+                    }
+                    board.move(step, r, t);
+                    if (board.tile(step, r).value() != currentvalue && currentvalue != 0) {
+                        //value changed after move, then update score
+                        score += board.tile(step, r).value();
+                    }
+                    changed = true;
+                }
+            }
+
+            for(int c = size - 1; c > 0; c -= 1){
+                Tile t = board.tile(c, r);
+                if(t != null){
+                    int step = c - moveLeft(c, r);
+                    board.move(step, r, t);
+                    changed = true;
+                }
+            }
+        }
+        return changed;
+    }
+
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
@@ -113,6 +387,19 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        //up
+
+        if (side == Side.NORTH) {
+            changed = upToMoveTilt();
+        }else if(side == Side.SOUTH){
+            changed = downToMoveTilt();
+        }else if(side == Side.EAST){
+            changed = rightToMoveTilt();
+        }else if(side == Side.WEST){
+            changed = leftToMoveTilt();
+        }
+
+
 
         checkGameOver();
         if (changed) {
@@ -138,6 +425,13 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+        for(int col = 0; col < b.size(); col += 1){
+            for (int row = 0; row < b.size(); row += 1){
+                if(b.tile(col, row) == null){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -148,6 +442,16 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        for(int col = 0; col < b.size(); col += 1){
+            for (int row = 0; row < b.size(); row += 1){
+                Tile t = b.tile(col, row);
+                if(t != null){
+                    if(t.value() == MAX_PIECE){
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
     }
 
@@ -159,6 +463,21 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+        int size = b.size();
+        for(int col = 0; col < size; col += 1){
+            for (int row = 0; row < size; row += 1){
+                Tile t = b.tile(col, row);
+                if(t == null){
+                    return true;
+                }
+                if(row + 1 < size && b.tile(col, row + 1) != null && t.value() == b.tile(col, row + 1).value()){
+                    return true;
+                }
+                if(col + 1 < size && b.tile(col + 1, row) != null && t.value() == b.tile(col + 1, row).value()){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
