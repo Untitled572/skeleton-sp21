@@ -73,6 +73,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
             first.next = first.next.next;
             first.next.front = first;
             size -= 1;
+            if (size == 0) {
+                end = first;
+            }
             return n;
         }
         return null;
