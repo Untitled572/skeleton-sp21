@@ -114,8 +114,8 @@ public class ArrayListDequeTest {
 
         boolean passed1 = false;
         boolean passed2 = false;
-        assertEquals("Should return null when removeFirst is called on an empty Deque,", null, lld1.removeFirst());
-        assertEquals("Should return null when removeLast is called on an empty Deque,", null, lld1.removeLast());
+        assertNull("return null when removeFirst is called,", lld1.removeFirst());
+        assertNull("return null when removeLast is called,", lld1.removeLast());
 
 
     }
@@ -166,6 +166,8 @@ public class ArrayListDequeTest {
                         int getIdx = StdRandom.uniform(0, deque2.size());
                         assertEquals(deque1.get(getIdx), deque2.get(getIdx));
                     }
+                    break;
+                default:
                     break;
             }
         }
