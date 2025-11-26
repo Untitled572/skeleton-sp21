@@ -32,10 +32,12 @@ public class LinkedListDeque<T> {
 
     public void addFirst(T item) {
         first.next = new Node(item, first, first.next);
-        end = first.next;
         if (size == 0) {
-            first.front = end;
+            first.front = first.next;
+            end = first.next;
             end.next = first;
+        } else {
+            first.next.next.front = first.next;
         }
         size += 1;
     }
@@ -43,6 +45,7 @@ public class LinkedListDeque<T> {
     public void addLast(T item) {
         end.next = new Node(item, end, first);
         end = end.next;
+        first.front = end;
         size += 1;
     }
 
@@ -78,6 +81,7 @@ public class LinkedListDeque<T> {
             T n = end.data;
             end = end.front;
             end.next = first;
+            first.front = end;
             size -= 1;
             return n;
         }
@@ -86,7 +90,7 @@ public class LinkedListDeque<T> {
 
     public T get(int index) {
         if (index <= size) {
-            Node n = first;
+            Node n = first.next;
             for (int i = 0; i < index; i += 1) {
                 n = n.next;
             }
