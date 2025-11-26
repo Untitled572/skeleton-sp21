@@ -30,7 +30,9 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public void addFirst(T item) {
-        if (size == capacity) resize(capacity * 2);
+        if (size == capacity) {
+            resize(capacity * 2);
+        }
         first = (first - 1 + capacity) % capacity;
         array[first] = item;
         size++;

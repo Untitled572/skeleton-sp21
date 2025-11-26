@@ -106,6 +106,11 @@ public class LinkedListDequeTest {
     }
 
     @Test
+    public void getTest() {
+
+    }
+
+    @Test
     /* check if null is return when removing from an empty LinkedListDeque. */
     public void emptyNullReturnTest() {
 
