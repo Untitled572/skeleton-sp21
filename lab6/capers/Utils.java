@@ -151,4 +151,27 @@ class Utils {
         return new RuntimeException(String.format(msg, args));
     }
 
+    /**
+     * mk a new dir
+     */
+    public static boolean mkDir(File name) {
+        if (!name.exists()) {
+            return name.mkdir();
+        }
+        return false;
+    }
+
+    /**
+     * mk a new file
+     */
+    public static boolean mkFile(File name) {
+        if (!name.exists()) {
+            try {
+                return name.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return false;
+    }
 }
